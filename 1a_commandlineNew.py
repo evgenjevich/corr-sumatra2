@@ -54,7 +54,7 @@ print 'my params:', params
 
 #extract the parameters
 N = params.get('N', 20)
-dx = params.get('dx', 1)  
+#dx = params.get('dx', 1)  
 total_steps = params.get('steps', 2)
 sumatra_label = params.get('sumatra_label', '')
 total_sweeps = params.get ('sweeps', 2)
@@ -71,7 +71,7 @@ sympy.diff(f_0, c, 2)
 # nx = int(sys.argv[1])
 # dx = float(sys.argv[2])
 
-mesh = fp.PeriodicGrid2D(nx=N, ny=N, dx=dx, dy=dx)
+mesh = fp.PeriodicGrid2D(nx=N, ny=N, dx=200.0/float(N), dy=200.0/float(N))
 
 c_alpha = 0.3
 c_beta = 0.7
@@ -80,7 +80,7 @@ M = 5.0
 c_0 = 0.5
 epsilon = 0.01
 rho_s = 5.0
-filepath = os.path.join('/data/aem1/new1a/corr-sumatra-test/Data', sumatra_label) # 
+filepath = os.path.join('/data/aem1/new1a/corr-sumatra2/Data', sumatra_label) # 
 
 # solution variable
 c_var = fp.CellVariable(mesh=mesh, name=r"$c$", hasOld=True)
@@ -123,7 +123,7 @@ def save_data(filename, f, time, cvar, steps, N):
 # solver equation    
 eqn = fp.TransientTerm(coeff=1.) == fp.DiffusionTerm(M * f_0_var(c_var)) - fp.DiffusionTerm((M, kappa))
 
-dump_times = [.5, 1.0, 10.0]
+dump_times = [1.0, 5.0, 10.0, 20.0, 30.0]
 elapsed = 0.0
 steps = 0
 dt = 0.01
@@ -133,14 +133,14 @@ dump_to_file = False
 filename = '1a_{0}_step{1}_data_time-{2:.2f}.npz'.format(N, str(steps).rjust(6, '0'), elapsed)
 
 # controls on how long the simulation runs: steps, duration, or both
-duration = 300
+duration = 500
 
 c_var.updateOld()
 from fipy.solvers.pysparse import LinearLUSolver as Solver
 from numpy.testing import assert_almost_equal as npt 
 solver = Solver()
 print "Starting Solver."
-while steps <= total_steps:
+while (steps <= total_steps) or (elapsed <= duration):
     res0 = eqn.sweep(c_var, dt=dt, solver=solver)
 
     for sweeps in range(total_sweeps):
