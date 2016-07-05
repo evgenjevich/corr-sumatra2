@@ -123,7 +123,7 @@ def save_data(filename, f, time, cvar, steps, N):
 # solver equation    
 eqn = fp.TransientTerm(coeff=1.) == fp.DiffusionTerm(M * f_0_var(c_var)) - fp.DiffusionTerm((M, kappa))
 
-dump_times = [1.0, 5.0, 10.0, 20.0, 30.0]
+dump_times = [1.0, 5.0, 10.0, 20.0, 100.0, 200, 500, 1000]
 elapsed = 0.0
 steps = 0
 dt = 0.01
@@ -140,7 +140,7 @@ from fipy.solvers.pysparse import LinearLUSolver as Solver
 from numpy.testing import assert_almost_equal as npt 
 solver = Solver()
 print "Starting Solver."
-while (steps <= total_steps) or (elapsed <= duration):
+while (steps <= total_steps) and (elapsed <= duration):
     res0 = eqn.sweep(c_var, dt=dt, solver=solver)
 
     for sweeps in range(total_sweeps):
