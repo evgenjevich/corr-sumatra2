@@ -19,7 +19,7 @@ def calc_dt(elapsed_time, dt, dt_old, dump_to_file, dump_times, filename):
         dt = dt_old
         dt = dt * 1.1
         dump_to_file = False
-        filename = '1a_{0}_step{1}_data_time-{2:.2f}.npz'.format(N, str(steps).rjust(6, '0'), elapsed+dt)
+        # filename = '1a_{0}_step{1}_data_time-{2:.2f}.npz'.format(N, str(steps).rjust(6, '0'), elapsed+dt)
     else:
         dt_old = dt
         dt = dt * 1.1
@@ -31,7 +31,7 @@ def calc_dt(elapsed_time, dt, dt_old, dump_to_file, dump_times, filename):
                 dump_to_file = True
                 
                 #dump_time files will have .mpz.npz extension
-                filename = '1a_{0}_step{1}_data_time-{2:.2f}.mpz.npz'.format(N, str(steps).rjust(6, '0'), elapsed+dt) 
+                # filename = '1a_{0}_step{1}_data_time-{2:.2f}.mpz.npz'.format(N, str(steps).rjust(6, '0'), elapsed+dt)
                 del dump_times[0]
 
     return dt, dt_old, dump_times, dump_to_file, filename
@@ -130,10 +130,10 @@ dt = 0.01
 dt_old = dt
 tolerance = 1e-1
 dump_to_file = False
-filename = '1a_{0}_step{1}_data_time-{2:.2f}.npz'.format(N, str(steps).rjust(6, '0'), elapsed)
+#filename = '1a_{0}_step{1}_data_time-{2:.2f}.npz'.format(N, str(steps).rjust(6, '0'), elapsed)
 
 # controls on how long the simulation runs: steps, duration, or both
-duration = 500
+duration = 1000
 
 c_var.updateOld()
 from fipy.solvers.pysparse import LinearLUSolver as Solver
@@ -153,12 +153,13 @@ while (steps <= total_steps) and (elapsed <= duration):
         if dump_to_file or steps%10==0:
             print steps
             print elapsed
-
+            if dump_to_file: filename = '1a_{0}_step{1}_data_time-{2:.2f}.mpz.npz'.format(N, str(steps).rjust(6, '0'), elapsed)
+            else: filename = '1a_{0}_step{1}_data_time-{2:.2f}.npz'.format(N, str(steps).rjust(6, '0'), elapsed)
             np.savez(os.path.join(filepath,filename),
                      c_var_array=np.array(c_var),
                      dt=dt,
-                     elapsed=elapsed,
-                     steps=steps,
+                     elapsed=elapsed-dt,
+                     steps=steps-1,
                      dx=c_var.mesh.dx,
                      dy=c_var.mesh.dy,
                      nx=c_var.mesh.nx,
