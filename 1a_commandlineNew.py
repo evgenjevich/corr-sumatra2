@@ -58,6 +58,7 @@ N = params.get('N', 20)
 total_steps = params.get('steps', 2)
 sumatra_label = params.get('sumatra_label', '')
 total_sweeps = params.get ('sweeps', 2)
+duration = params.get('duration', 500)
 
 c, rho_s, c_alpha, c_beta = sympy.symbols("c_var rho_s c_alpha c_beta")
 f_0 = rho_s * (c - c_alpha)**2 * (c_beta - c)**2
@@ -133,7 +134,7 @@ dump_to_file = False
 #filename = '1a_{0}_step{1}_data_time-{2:.2f}.npz'.format(N, str(steps).rjust(6, '0'), elapsed)
 
 # controls on how long the simulation runs: steps, duration, or both
-duration = 1000
+
 
 c_var.updateOld()
 from fipy.solvers.pysparse import LinearLUSolver as Solver
